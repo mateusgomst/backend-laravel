@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserStoreRequest;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class UserController
@@ -10,7 +12,7 @@ class UserController
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         $query = User::search(request: $request);
 
@@ -32,9 +34,14 @@ class UserController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UserStoreRequest $request): JsonResponse
     {
-        //
+        $data = $request->validated();
+        $data['password'] = bcrypt($data['password']);
+
+        $user = User::create($data);
+
+        return response()->json($user, 201);
     }
 
     /**
