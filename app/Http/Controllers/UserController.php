@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserStoreRequest;
+use App\Http\Requests\UserUpdateRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -24,20 +25,12 @@ class UserController
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(UserStoreRequest $request): JsonResponse
     {
         $data = $request->validated();
-        $data['password'] = bcrypt($data['password']);
+        // $data['password'] = bcrypt(value: $data['password']); model ja criptografa
 
         $user = User::create($data);
 
@@ -47,32 +40,28 @@ class UserController
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $user): JsonResponse
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        return response()->json($user, 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UserUpdateRequest $request, User $user)
     {
-        //
+        $data = $request->validated();
+        $user->fill($data);
+        $user->save();
+        return response()->json($user, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(User $user)
     {
-        //
+        $user->delete();
+        return response()->json(null, 204);
     }
 }
