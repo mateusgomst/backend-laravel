@@ -13,7 +13,16 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    public function scopeSearch($query, Request $request) {}
+    public function scopeSearch($query, Request $request)
+    {
+        if ($request->name) {
+            $query->where('name', 'ilike', '%' . $request->name . '%');
+        }
+
+        if ($request->email) {
+            $query->where('email', 'ilike', '%' . $request->email . '%');
+        }
+    }
 
     /**
      * The attributes that are mass assignable.

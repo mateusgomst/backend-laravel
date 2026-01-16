@@ -12,17 +12,13 @@ class UserController
      */
     public function index(Request $request)
     {
-        $query = User::search($request);
+        $query = User::search(request: $request);
 
-        $n = $request->get('list', default: 10);
+        $n = $request->get('list', 10);
 
         $list = $query->paginate($n);
 
-        $data = [
-            'list' => $list,
-        ];
-
-        return view('pages.user.index', $data);
+        return response()->json($list, 200);
     }
 
     /**
